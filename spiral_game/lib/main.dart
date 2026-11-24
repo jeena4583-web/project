@@ -1,121 +1,335 @@
-import 'package:material_ui/material_ui.dart';
+import 'dart:math';
+import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() => runApp(const GuessApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+const Color kPurple = Color(0xFF5E3C9C);
+const Color kGreen = Color(0xFF2E7D32);
 
-  // This widget is the root of your application.
+const BoxDecoration kBackground = BoxDecoration(
+  gradient: LinearGradient(
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    colors: [Color(0xFF2A0A5E), Color(0xFF000000)],
+  ),
+);
+
+class GuessApp extends StatelessWidget {
+  const GuessApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark(useMaterial3: true),
+      home: const SplashScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+// ---------------- Screen 1: Splash ----------------
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const StartScreen()),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+    return const Scaffold(
+      backgroundColor: Color(0xFF151515),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        child: Icon(Icons.casino_outlined, size: 120, color: Color(0xFFC77A10)),
+      ),
+    );
+  }
+}
+
+// ---------------- Screen 2: Start ----------------
+class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: kBackground,
+        padding: const EdgeInsets.all(24),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Spacer(),
+              const Center(
+                child: Icon(Icons.sports_esports,
+                    size: 160, color: Color(0xFF8E6FE0)),
+              ),
+              const SizedBox(height: 40),
+              const Text('Guess',
+                  style: TextStyle(fontSize: 40, color: kPurple)),
+              const Text('Number',
+                  style: TextStyle(fontSize: 40, color: Colors.white)),
+              const Spacer(),
+              SizedBox(
+                width: double.infinity,
+                height: 64,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kPurple,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LevelScreen()),
+                  ),
+                  child: const Text('Start To Play',
+                      style: TextStyle(fontSize: 22)),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+// ---------------- Screen 3: Level select ----------------
+class LevelInfo {
+  final int level;
+  final String label;
+  final int max;
+  final Color color;
+  const LevelInfo(this.level, this.label, this.max, this.color);
+}
+
+const List<LevelInfo> kLevels = [
+  LevelInfo(1, 'Easy', 10, Colors.green),
+  LevelInfo(2, 'Medium', 50, Colors.cyan),
+  LevelInfo(3, 'Hard', 100, Colors.red),
+];
+
+class LevelScreen extends StatelessWidget {
+  const LevelScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: kBackground,
+        child: SafeArea(
+          child: Column(
+            children: [
+              const Spacer(),
+              const Icon(Icons.public, size: 180, color: Color(0xFFE0B84A)),
+              const Spacer(),
+              for (final l in kLevels)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 36, vertical: 8),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => GameScreen(info: l)),
+                    ),
+                    child: Container(
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: kPurple,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 20),
+                          Icon(Icons.diamond, size: 48, color: l.color),
+                          const Spacer(),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('level ${l.level}',
+                                  style: const TextStyle(fontSize: 24)),
+                              Text(l.label,
+                                  style: const TextStyle(fontSize: 16)),
+                            ],
+                          ),
+                          const Spacer(),
+                          const SizedBox(width: 68),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 40),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------- Screen 4: Game ----------------
+class GameScreen extends StatefulWidget {
+  final LevelInfo info;
+  const GameScreen({super.key, required this.info});
+
+  @override
+  State<GameScreen> createState() => _GameScreenState();
+}
+
+class _GameScreenState extends State<GameScreen> {
+  final Random _rnd = Random();
+  late int _target;
+  String _input = '';
+  String _message = '';
+  int _score = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _newTarget();
+    _message = 'Number guess karo (1 - ${widget.info.max})';
+  }
+
+  void _newTarget() => _target = _rnd.nextInt(widget.info.max) + 1;
+
+  void _press(String d) {
+    final maxLen = widget.info.max.toString().length;
+    if (_input.length >= maxLen) return;
+    setState(() => _input += d);
+  }
+
+  void _clear() => setState(() => _input = '');
+
+  void _check() {
+    if (_input.isEmpty) return;
+    final guess = int.parse(_input);
+    setState(() {
+      if (guess == _target) {
+        _score += 10 * widget.info.level;
+        _message = 'Sahi jawab! Naya number ban gaya';
+        _newTarget();
+      } else if (guess < _target) {
+        _message = 'Thora bara number socho';
+      } else {
+        _message = 'Thora chhota number socho';
+      }
+      _input = '';
+    });
+  }
+
+  Widget _key(String label,
+      {VoidCallback? onTap, Color fill = const Color(0xFF0A0A0A), double fs = 28}) {
+    return Padding(
+      padding: const EdgeInsets.all(6),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: Container(
+          height: 56,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: fill,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: kGreen, width: 3),
+            boxShadow: const [
+              BoxShadow(color: Color(0x662E7D32), blurRadius: 10),
+            ],
+          ),
+          child: Text(label, style: TextStyle(fontSize: fs)),
+        ),
+      ),
+    );
+  }
+
+  Widget _num(String d) => Expanded(child: _key(d, onTap: () => _press(d)));
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: kBackground,
+        child: SafeArea(
+          child: Column(
+            children: [
+              const SizedBox(height: 10),
+              Container(
+                width: 160,
+                height: 160,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [
+                    const Color(0xFF1B5E20),
+                    const Color(0xFF1B5E20).withOpacity(0.2),
+                  ]),
+                ),
+                child: Text(_input.isEmpty ? '?' : _input,
+                    style: const TextStyle(fontSize: 40)),
+              ),
+              const SizedBox(height: 16),
+              Text(_message, style: const TextStyle(fontSize: 18)),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Column(
+                  children: [
+                    Row(children: [
+                      _num('1'),
+                      _num('2'),
+                      _num('3'),
+                      Expanded(child: _key('C', onTap: _clear)),
+                    ]),
+                    Row(children: [
+                      _num('4'),
+                      _num('5'),
+                      _num('6'),
+                      Expanded(
+                        child: _key('Score',
+                            fill: const Color(0xFF145A1E), fs: 16),
+                      ),
+                    ]),
+                    Row(children: [
+                      _num('7'),
+                      _num('8'),
+                      _num('9'),
+                      Expanded(
+                        child: _key('$_score',
+                            fill: const Color(0xFF1F4D2A), fs: 26),
+                      ),
+                    ]),
+                    Row(children: [
+                      _num('0'),
+                      Expanded(
+                        flex: 3,
+                        child: _key('Check', onTap: _check, fs: 22),
+                      ),
+                    ]),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
       ),
     );
   }
